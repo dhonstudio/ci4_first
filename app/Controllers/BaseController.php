@@ -38,6 +38,21 @@ abstract class BaseController extends Controller
     protected $helpers = [];
 
     /**
+     * baseurl
+     *
+     * @var string
+     */
+    protected $base_url = ENVIRONMENT == 'development' ? 'http://localhost/ci4_first'
+        : (ENVIRONMENT == 'testing' ? 'http://dev.domain.com/ci4/...' : 'https://domain.com/ci4/...');
+
+    /**
+     * assets path
+     *
+     * @var string
+     */
+    protected $assets = ENVIRONMENT == 'development' ? 'http://localhost/assets/' : 'https://domain.com/assets/';
+
+    /**
      * Constructor.
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -48,5 +63,27 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
+
+        $this->data = [
+            'base_url'  => $this->base_url,
+            'assets'    => $this->assets,
+
+            'lang'      => null,
+            'meta'      => [
+                'keywords'      => 'dhon studio, dhonstudio, dhonstudio.com',
+                'author'        => null,
+                'generator'     => null,
+                'ogimage'       => null,
+                'description'   => 'This landing page built base on Dhon Studio repository on Github.',
+            ],
+            'favicon'   => $this->assets . "img/icon.ico",
+            'title'     => 'My Landing Page',
+
+            'email'     => 'email@email.com',
+            'whatsapp'  => '62 8123 1234',
+            'whatsapp_link'  => 'https://wa.me/6281231234',
+            'github'    => 'https://github.com/dhonstudio',
+            'instagram' => 'https://instagram.com/dhonstudio',
+        ];
     }
 }
