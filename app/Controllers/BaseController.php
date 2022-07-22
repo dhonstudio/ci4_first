@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use Assets\Ci4_libraries\DhonHit;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -53,6 +54,35 @@ abstract class BaseController extends Controller
     protected $assets = ENVIRONMENT == 'development' ? 'http://localhost/assets/' : 'https://domain.com/assets/';
 
     /**
+     * git assets path
+     *
+     * @var string
+     */
+    protected $git_assets = ENVIRONMENT == 'development' ? '/../../../assets/'
+        : (ENVIRONMENT == 'testing' ? '/../../../../../assets/' : '/../../../../assets/');
+
+    /**
+     * default data for views
+     *
+     * @var mixed
+     */
+    protected $data;
+
+    /**
+     * for create hit page
+     *
+     * @var DhonHit
+     */
+    protected $dhonhit;
+
+    /**
+     * for connect API
+     *
+     * @var DhonRequest
+     */
+    protected $dhonrequest;
+
+    /**
      * Constructor.
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -77,13 +107,26 @@ abstract class BaseController extends Controller
                 'description'   => 'This landing page built base on Dhon Studio repository on Github.',
             ],
             'favicon'   => $this->assets . "img/icon.ico",
-            'title'     => 'My Landing Page',
+            'title'     => 'My Landing Page by Dhon Studio',
 
-            'email'     => 'email@email.com',
-            'whatsapp'  => '62 8123 1234',
-            'whatsapp_link'  => 'https://wa.me/6281231234',
+            'email'     => 'admin@dhonstudio.com',
+            'whatsapp'  => '62 877 00 8899 13',
+            'whatsapp_link'  => 'https://wa.me/6287700889913',
             'github'    => 'https://github.com/dhonstudio',
             'instagram' => 'https://instagram.com/dhonstudio',
         ];
+
+        require __DIR__ . $this->git_assets . 'ci4_libraries/DhonHit.php';
+        $auth = ENVIRONMENT == 'production' ? ['prod_username', 'prod_password'] : ['dev_username', 'dev_password'];
+        $this->dhonhit = new DhonHit([
+            'api_url'   => [
+                'development'   => 'http://localhost/ci4_api2/',
+                'testing'       => 'http://dev.domain.com/ci4/service/',
+                'production'    => 'https://domain.com/ci4/service/',
+            ],
+            'auth'      => $auth,
+        ]);
+        $this->dhonhit->base_url = $this->base_url;
+        $this->dhonrequest = $this->dhonhit->dhonrequest;
     }
 }
